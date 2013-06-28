@@ -7,26 +7,27 @@ CFLAGS  = $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
 LDFLAGS = -L/usr/local/lib
 LIBS    = -lwiringPi
 
-SRC     =       rpi_rfm70_test.c
+SRC     =       rfm70_test.c
 
-OBJ     =       rpi_rfm70_test.o 
+OBJ     =       rfm70_test.o 
 
-all:            rpi_rfm70_test
+all:            rfm70 rfm70_test
 
 rfm70:		rfm70.o
 	@echo [link]
-	$(CC) -o $@ rfm70.o $(LDFLAGS) $(LIBS)
+	$(CC) -c rfm70.cpp -o librfm70.o $(LDFLAGS) $(LIBS)
+	ar rvs librfm70.a librfm70.o
 
-rpi_rfm70_test:        rpi_rfm70_test.o
+rfm70_test:        rfm70_test
 	@echo [link]
-	$(CC) -o $@ rpi_rfm70_test.o $(LDFLAGS) $(LIBS)
+	$(CC) rfm70_test.cpp -o $@ -I. $(LDFLAGS) -L. $(LIBS) -lrfm70
         
 .c.o:
 	@echo [CC] $<
 	@$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
-	rm -f $(OBJ) *~ core tags rpi_rfm70_test
+	rm -f $(OBJ) *~ core tags rfm70_test
 
 tags:   $(SRC)
 	@echo [ctags]
@@ -35,4 +36,3 @@ tags:   $(SRC)
 depend:
 	makedepend -Y $(SRC)
 
-# DO NOT DELETE
